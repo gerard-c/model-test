@@ -1,17 +1,24 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import * as THREE from '../node_modules/three/build/three.module.js';
+// import {GLTFExporter} from '../node_modules/three/examples/jsm/exporters'
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+const frame = document.getElementById('plane')
+frame.addEventListener('load', () => {
+  console.log(frame.model.materials[0].normalTexture[0]);
+})
+
+const scene = new THREE.Scene();
+const geometry = new THREE.PlaneGeometry(1, 1.5);
+const texture = new THREE.TextureLoader().load('/assets/planet.jpeg');
+const material = new THREE.MeshBasicMaterial({ map: texture })
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+const renderer = new THREE.WebGLRenderer();
+
+const plane = new THREE.Mesh(geometry, material);
+scene.add(plane);
+scene.name = 'planet'
+
+
+
+console.log(scene)

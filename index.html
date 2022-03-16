@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Model-Viewer Test</title>
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <script type="module" src="./src/index.js"></script>
+  <style>
+    model-viewer {
+      width: 400px;
+      height: 600px;
+    }
+  </style>
+</head>
+
+<body>
+  <model-viewer id="plane" camera-controls src="assets/blank.gltf" ar ar-modes="webxr">
+    <div class="controls">
+      <p>Textures</p>
+      <select id="normals2">
+        <option>None</option>
+        <option value="assets/planet.jpeg">Forbidden Planet</option>
+        <option value="assets/retro.jpg">Retro Camera</option>
+        <option value="assets/movie.png">Movie Poster</option>
+      </select>
+    </div>
+  </model-viewer>
+  <script type="module">
+
+
+    const modelViewerTexture = document.querySelector("model-viewer#plane");
+
+    modelViewerTexture.addEventListener("load", () => {
+
+      const material = modelViewerTexture.model.materials[0];
+
+      const createAndApplyTexture = async (channel, event) => {
+        console.log('Options: ', event.target.options[event.target.selectedIndex].text)
+        console.log('Material: ', material.normalTexture)
+        if (event.target.value == "None") {
+          // Clears the texture.
+          material[channel].setTexture(null);
+        } else if (event.target.value) {
+          // Creates a new texture.
+          const texture = await modelViewerTexture.createTexture(event.target.value);
+          // Set the texture name
+          texture.name = event.target.options[event.target.selectedIndex].text.replace(/ /g, "_").toLowerCase();
+          // Applies the new texture to the specified channel.
+          material[channel].setTexture(texture);
+        }
+      }
+
+      document.querySelector('#normals2').addEventListener('input', (event) => {
+        createAndApplyTexture('normalTexture', event);
+      });
+    });
+
+  </script>
+</body>
+
+</html>
